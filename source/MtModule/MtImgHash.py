@@ -1,1 +1,0 @@
-from imagehash import average_hash

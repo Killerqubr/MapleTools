@@ -140,14 +140,14 @@ class preLoadWindow(QMainWindow):
         painter.drawRoundedRect(self.rect(), 30, 30)
 
     def loadImages(self):
-        from source.MtModule import MtMessageBox
-        self.MtMsgBox = MtMessageBox()
+        from source.MuLib import MuMessageBox
+        self.MuMsgBox = MuMessageBox()
         self.loadIconImage()
         self.loadNameImage()
         self.loadBackgroundImage()
 
     def loadIconImage(self):
-        self.MtMsgBox.Critical(None, self.__version__, Preset=FileNotFoundError, info="'assets/preLoader/MtIcon.png'") if not os.access("assets/preLoader/MtIcon.png", os.F_OK) else None
+        self.MuMsgBox.Critical(None, self.__version__, Preset=FileNotFoundError, info="'assets/preLoader/MtIcon.png'") if not os.access("assets/preLoader/MtIcon.png", os.F_OK) else None
         iconPixmap = QPixmap("assets/preLoader/MtIcon.png")
         if not iconPixmap.isNull():
             iconPixmap = iconPixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation) # type: ignore
@@ -156,7 +156,7 @@ class preLoadWindow(QMainWindow):
             self.closePreLoad()
 
     def loadNameImage(self):
-        self.MtMsgBox.Critical(None, self.__version__, Preset=FileNotFoundError, info="'assets/preLoader/MtName.png'") if not os.access("assets/preLoader/MtName.png", os.F_OK) else None
+        self.MuMsgBox.Critical(None, self.__version__, Preset=FileNotFoundError, info="'assets/preLoader/MtName.png'") if not os.access("assets/preLoader/MtName.png", os.F_OK) else None
         namePixmap = QPixmap("assets/preLoader/MtName.png")
         if not namePixmap.isNull():
             namePixmap = namePixmap.scaled(400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation) # type: ignore
@@ -165,7 +165,7 @@ class preLoadWindow(QMainWindow):
             self.closePreLoad()
 
     def loadBackgroundImage(self):
-        self.MtMsgBox.Critical(None, self.__version__, Preset=FileNotFoundError, info="'assets/preLoader/MapleBackg.jpg'") if not os.access("assets/preLoader/MapleBackg.jpg", os.F_OK) else None
+        self.MuMsgBox.Critical(None, self.__version__, Preset=FileNotFoundError, info="'assets/preLoader/MapleBackg.jpg'") if not os.access("assets/preLoader/MapleBackg.jpg", os.F_OK) else None
         backgroundPixmap = QPixmap("assets/preLoader/MapleBackg.jpg")
         if not backgroundPixmap.isNull():
             backgroundPixmap = backgroundPixmap.scaled(500, 500, Qt.IgnoreAspectRatio, Qt.SmoothTransformation) # type: ignore
@@ -189,67 +189,50 @@ class preLoadWindow(QMainWindow):
             self.progressNumLabel.setText(progress)
 
     def initProgressAnimation(self):
-        self.posIntroPL = QPropertyAnimation(self.progressLabel, b'pos')
-        self.posIntroPL.setDuration(800)
-        self.posIntroPL.setStartValue(QPoint(220, 450))
-        self.posIntroPL.setEndValue(QPoint(40, 450))
-        self.posIntroPL.setEasingCurve(QEasingCurve.OutExpo)
-
-        self.opaEffectPL = QGraphicsOpacityEffect(self)
-        self.opaIntroPL = QPropertyAnimation(self.opaEffectPL, b'opacity')
-        self.progressLabel.setGraphicsEffect(self.opaEffectPL)
-        self.opaIntroPL.setDuration(900)
-        self.opaIntroPL.setStartValue(0)
-        self.opaIntroPL.setEndValue(1)
-        self.opaIntroPL.setEasingCurve(QEasingCurve.OutExpo)
-
-        self.posIntroPIL = QPropertyAnimation(self.progressInfoLabel, b'pos')
-        self.posIntroPIL.setDuration(800)
-        self.posIntroPIL.setStartValue(QPoint(220, 425))
-        self.posIntroPIL.setEndValue(QPoint(40, 425))
-        self.posIntroPIL.setEasingCurve(QEasingCurve.OutExpo)
-
-        self.opaEffectPIL = QGraphicsOpacityEffect(self)
-        self.opaIntroPIL = QPropertyAnimation(self.opaEffectPIL, b'opacity')
-        self.progressInfoLabel.setGraphicsEffect(self.opaEffectPIL)
-        self.opaIntroPIL.setDuration(900)
-        self.opaIntroPIL.setStartValue(0)
-        self.opaIntroPIL.setEndValue(1)
-        self.opaIntroPIL.setEasingCurve(QEasingCurve.OutExpo)
+        from source.MuLib.MuAnim import MuAnimation as MuAnim
+        self.posIntroPL = MuAnim.posAnim(self.progressLabel, 800, QPoint(200,450), QPoint(40,450))
+        self.opaIntroPL = MuAnim.opaAnim(self, self.progressLabel ,900, 0, 1)
+        self.posIntroPIL = MuAnim.posAnim(self.progressInfoLabel, 800, QPoint(220,425), QPoint(40,425))
+        self.opaIntroPIL = MuAnim.opaAnim(self, self.progressInfoLabel ,900, 0, 1)
 
     def closePreLoad(self):
         self.close()
+
+    @staticmethod
+    def ResouceVerification():
+        import hashlib
+        
 
     class preLoad:
         """
         Load resource while program is running.
         """
-        def __init__(self, pL, MtMsgBox):
-            from source.MtModule import MtMessageBox
-            self.MtMsgBox = MtMessageBox()
+        def __init__(self, pL, MuMsgBox):
+            from source.MuLib import MuMessageBox
+            self.MuMsgBox = MuMessageBox()
             self.pL = pL # type: preLoadWindow
-            self.MtMsgBox = MtMsgBox
+            self.MuMsgBox = MuMsgBox
             self.pL.updateProgress("初始化", None, None)
 
         def LoadResource(self):
             #self.pL.updateProgress("加载资源", None, None)
             self.pL.updateProgress("加载资源", None, "完成")
-            QTimer.singleShot(3000, self.LoadModule)
+            QTimer.singleShot(1000, self.LoadModule)
 
         def LoadModule(self):
             #self.pL.updateProgress("加载模块", None, None)
 
             self.pL.updateProgress("加载模块", None, "完成")
-            QTimer.singleShot(3000, self.LoadFinal)
+            QTimer.singleShot(1000, self.LoadFinal)
         
         def LoadFinal(self):
             self.pL.updateProgress("正在加载 Maple Tools", "准备就绪", " ")
-            QTimer.singleShot(3000, self.LaunchMapleTools)
+            QTimer.singleShot(1000, self.LaunchMapleUI)
 
-        def LaunchMapleTools(self):
+        def LaunchMapleUI(self):
             if self.pL:
                 self.pL.closePreLoad()
 
-            from source import MapleToolsWindow
-            self.MapleTools = MapleToolsWindow()
-            self.MapleTools.show()
+            from source import MapleUIWindow
+            self.MapleUI = MapleUIWindow()
+            self.MapleUI.show()

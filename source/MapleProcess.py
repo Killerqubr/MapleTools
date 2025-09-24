@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QToolBar, QStatusBar, QAction, QApplica
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
-class MapleToolsWindow(QMainWindow):
+class MapleUIWindow(QMainWindow):
     """
     Main user Interface of the Program.
     """
@@ -88,7 +88,7 @@ class MapleToolsWindow(QMainWindow):
         self.initUI()
     
     def initUI(self):
-        self.setWindowTitle("Maple Tools 2025")
+        self.setWindowTitle("MapleUI 2025")
         self.setupToolBar()
         self.setupStatusBar()
     
@@ -98,7 +98,8 @@ class MapleToolsWindow(QMainWindow):
         
         # 帮助菜单
         self.helpMenu = QMenu("帮助", self)
-        self.aboutAction = QAction("关于 Maple Tools", self)
+        self.aboutAction = QAction("关于 MapleUI Designer", self)
+        self.aboutAction.triggered.connect(self.close)
         
         self.helpMenu.addAction(self.aboutAction)
         
@@ -110,7 +111,7 @@ class MapleToolsWindow(QMainWindow):
         
         self.toolbar.addWidget(self.helpButton)
         
-        self.addToolBar(Qt.TopToolBarArea, self.toolbar) # type: ignore
+        self.addToolBar(self.toolbar)
     
     def setupStatusBar(self):
         self.statusBar = QStatusBar(self)
